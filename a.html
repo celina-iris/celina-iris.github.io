@@ -1,0 +1,23 @@
+<html>
+
+	<body>
+		<form action="a.html" method="get">
+			<div>
+				username: <input name="username" />
+			</div>
+			<div>
+				first name: <input name="firstName" />
+			</div>
+			<div>
+				last name: <input name="lastName" />
+			</div>
+			<input type="submit" />
+        </form>
+        <script>
+            var url = new URL(window.location.href);
+            url.searchParams.get("username")
+            
+        </script>
+	</body>
+
+</html>
