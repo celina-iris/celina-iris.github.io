@@ -42,7 +42,7 @@ function setHeader() {
     var userNum = parseInt(url.searchParams.get("user"));
     
     var on = document.createElement("a");
-    $(on).attr("href", "Home-feed.html");
+    $(on).attr("href", "index.html");
     $(on).text("Home");
     if(!isNaN(userNum)) {
         var tw = document.createElement("a");

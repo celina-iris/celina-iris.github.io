@@ -63,7 +63,7 @@ body{
 
 .album_img{
     margin-left: 10px;
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
 a{
@@ -78,10 +78,15 @@ a{
     display: none;
 }
 
+.div_username{
+    text-align: center;
+    width:300px;
+}
+
 .side_username{
     position: absolute;
-    left: 120px;
     top: 130px;
+    left: 120px;
     color: #67686c;
     font-family: KeepCalm;
 }
@@ -93,6 +98,15 @@ a{
     font-size: 70%;
     color:#f29ac2;
     font-size:15px;
+    font-family: KeepCalm;
+}
+
+.album_span{
+    position: relative;
+    left: 100px;
+    top: 5px;
+    color:#f29ac2;
+    font-size:20px;
     font-family: KeepCalm;
 }
 

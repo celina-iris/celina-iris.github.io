@@ -1,25 +1,21 @@
 var albums, users, photos, posts;
-var numAlb = 4999, click = 0, numPosts = 99, endPosts = 0;
+var numAlb = 99, end=0, click = 0, numPosts = 99, endPosts = 0, incre = 5;
 $(document).ready(function (){
     
     $.get("https://jsonplaceholder.typicode.com/users", function (data) {
         users = data;
-        console.log(users[0].username);
     });
     
     $.get("https://jsonplaceholder.typicode.com/albums", function (data) {
 		albums = data;
-        console.log(albums[0].title);
 	});
     
     $.get("https://jsonplaceholder.typicode.com/photos", function (data) {
         photos = data;
-        console.log(photos[0].title);
     });
     
     $.get("https://jsonplaceholder.typicode.com/posts", function (data) {
 		posts = data;
-        console.log(posts[0].title);
         setTimeout(function(){
             display();
         }, 1000);
@@ -32,10 +28,10 @@ function display() {
     getStart();
     getEnd();
     displayInfo();
+    getStartU();
+    getEndU();
     displayAlbum();
-    hideNextButton();
     displayPosts();
-    showButton();
 }
 
 function setHeader() {
@@ -53,7 +49,7 @@ function setHeader() {
     var userNum = url.searchParams.get("user");
     
     var on = document.createElement("a");
-    $(on).attr("href", "Home-feed.html");
+    $(on).attr("href", "index.html");
     $(on).text("Home");
     var tw = document.createElement("a");
     $(tw).attr("href", url);
@@ -226,33 +222,21 @@ function getStart() {
             }
         }
     }
-    console.log(numPosts);
 }
 
-function displayAlbum(){
-    var sideInfo = document.createElement("div"); //this means that friends is a div
-    $(sideInfo).addClass("album_container");
-    var temp = 1;
-    for(var count = 49 ; count < 5000 && temp < 100; count += 49) {
-        var album = document.createElement("div");
-        var image = $("<img>");
-        $(image).attr("style", "width:30%");
-        $(image).addClass("album_img");
-        $(image).attr("href", "InAlbum.html?Album"+temp);
-        image.attr("src", photos[count].thumbnailUrl);
-        
-        var clkabl = $("<a>");
-        $(clkabl).attr("href", "InAlbum.html?album=" + temp);
-        $(clkabl).addClass("album_p");
-        $(clkabl).text(albums[temp-1].title);
-        $(album).append(image);
-        $(album).append(clkabl);
-        ++temp;
-    
-        $(sideInfo).append(album);
+function getStart() {
+    var found = false;
+    var url = new URL(window.location.href);
+    var userNum = parseInt(url.searchParams.get("user"));
+    if(!isNaN(userNum)) {
+        while(numPosts > 0 && !found) {
+            if(userNum == parseInt(posts[numPosts].userId)) {
+                found = true;
+            } else {
+                --numPosts; 
+            }
+        }
     }
-    $(".albumbar").append(sideInfo);    
-    $(".album_container").hide().fadeIn(800);
 }
 
 function getEnd() {
@@ -269,12 +253,89 @@ function getEnd() {
             }
         }
     }
-    console.log(endPosts);
+}
+
+function getStartU(userNum) {
+    var url = new URL(window.location.href);
+    var userNum = parseInt(url.searchParams.get("user"));
+    var found = false;
+    while(numAlb >= 0 && !found) {
+        if(userNum == parseInt(albums[numAlb].userId)) {
+            found = true;
+        } else {
+            --numAlb; 
+        }
+    }
+}
+
+function getEndU(userNum) {
+    var url = new URL(window.location.href);
+    var userNum = parseInt(url.searchParams.get("user"));
+    var found = false;
+    if(!isNaN(userNum)) {
+        end = numAlb;
+        while(end >= 0 && !found) {
+             
+            if(userNum != parseInt(albums[end].userId)) {
+                found = true;
+                ++end;
+            } else {
+                --end; 
+            }
+        }
+    }
+}
+
+function displayAlbum(){
+    
+    var sideInfo = document.createElement("div"); //this means that friends is a div
+    $(sideInfo).addClass("album_container");
+    
+    var albumWord = document.createElement("span");
+    $(albumWord).addClass("album_span");
+    $(albumWord).text("ALBUM");
+    $(albumWord).append("</br>");
+    $(sideInfo).append(albumWord);
+    
+    var pick = 0;
+    for(var count = numAlb ; count > end ; --count) {
+        var album = document.createElement("div");
+        var image = $("<img>");
+        $(image).attr("style", "width:30%");
+        $(image).addClass("album_img");
+        var t = document.createElement("a");
+        $(t).attr("href", "InAlbum.html?album=" + albums[count].id);
+        $(t).attr("href", "InAlbum.html?album=" + albums[count].id);
+        if(count == 0) {
+            pick = randomizer()+(count)*49;
+        } else {
+            pick = randomizer()+(count-1)*49;
+        }
+        
+        image.attr("src", photos[pick].thumbnailUrl);
+        
+        var clkabl = $("<a>");
+        $(clkabl).attr("href", "InAlbum.html?album=" + albums[count].id);
+        $(clkabl).addClass("album_p");
+        $(clkabl).text(albums[count].title);
+        $(t).append(image);
+        $(album).append(t);
+        $(album).append(clkabl);
+    
+        $(sideInfo).append(album);
+    }
+    $(".albumbar").append(sideInfo);    
+    $(".album_container").hide().fadeIn(800);
+}
+
+function randomizer(){
+    return Math.floor(Math.random()*49);
 }
 
 function displayPosts() {
     if(numPosts > endPosts) {
-        for (var i = numPosts; i > numPosts - 5 && i > endPosts; i--){
+        $(".feed").empty();
+        for (var i = numPosts; i > numPosts - incre && i > endPosts; i--){
             var container = document.createElement("div");
             $(container).addClass("post_container");
 
@@ -302,11 +363,24 @@ function displayPosts() {
             $(container).append(title);
             $(container).append(text);
             $(".feed").append(container);  
+            
+            console.log(i);
+            console.log( numPosts - incre );
         }
+        
         snippet();
         $(".post_container").hide().fadeIn(800);
-        numPosts = i;
+        incre+=5;
         click +=1;
+        
+        var buttonNext = document.createElement("div");
+        $(buttonNext).attr("id", "btnNext");
+        $(buttonNext).text("Load More");
+        $(buttonNext).click(function(){
+            onNextClicked();
+        });
+        $(".feed").append(buttonNext);  
+        $("#btnNext").hide().fadeIn(800);
     }
 }
 
@@ -350,7 +424,6 @@ function showButton() {
 function onNextClicked() {
     displayPosts();
     hideNextButton();
-    console.log(numPosts);
 }
 
 function hideNextButton() {
