@@ -184,7 +184,7 @@ function displayPictures() {
             $(clkabl).text("From Album Title: " + albums[parseInt(photos[count].albumId)-1].title);
             var clkabl2 = $("<a>");
             $(clkabl2).addClass("clkabl_a");
-            $(clkabl2).attr("href", "Profile-Feed.html?user=" + users[parseInt(albums[parseInt(photos[count].albumId)-1].userId) - 1].id);
+            $(clkabl2).attr("href", "Profile-feed.html?user=" + users[parseInt(albums[parseInt(photos[count].albumId)-1].userId) - 1].id);
             $(clkabl2).text("Taken By: " + users[parseInt(albums[parseInt(photos[count].albumId)-1].userId) - 1].username);
             $(cap).append(clkabl);
             $(cap).append("<p></p>");
